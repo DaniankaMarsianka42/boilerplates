@@ -2,6 +2,8 @@ package main
 
 import (
 	"time"
+
+	inventory_v1 "github.com/DaniankaMarsianka42/boilerplates/workspace/shared/pkg/proto/inventory/v1"
 )
 
 type Part struct {
@@ -58,6 +60,12 @@ func (c Category) String() string {
 }
 
 var BD = make(map[string]Part)
+
+const grpcPort = 5050
+
+type inventoryService struct {
+	inventory_v1.UnimplementedInventoryServiceServer
+}
 
 func main() {
 
