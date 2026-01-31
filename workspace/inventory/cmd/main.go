@@ -121,11 +121,33 @@ func (s *inventoryServer) GetPart(_ context.Context, req *inventory_v1.GetReques
 
 }
 
-func (s *inventoryServer) ListenPart(_ context.Context, req *inventory_v1.ListenRequest) (*inventory_v1.ListenResponse, error) {
-	log.Println("uuid из реквеста: ", req.Parts.Uuid)
+func (s *inventoryServer) ListPart(_ context.Context, req *inventory_v1.ListRequest) (*inventory_v1.ListResponse, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 
-	return &inventory_v1.ListenResponse{
-		Part: nil,
+	if len(req.Parts.Uuid)+len(req.Parts.Name)+
+		len(req.Parts.Category)+len(req.Parts.Manufacturer)+
+		len(req.Parts.Manufacturer) == 0 {
+
+		var parts = []*inventory_v1.Part{}
+
+		for _, part := range BD {
+			parts = append(parts, CmdPartToProtoPart(part))
+		}
+
+		return &inventory_v1.ListResponse{
+			Part: parts,
+		}, nil
+	}
+
+	log.Println("че то передали походу")
+
+	return &inventory_v1.ListResponse{
+		Part: []*inventory_v1.Part{
+			&inventory_v1.Part{
+				Uuid: "фильтрации пока что нет(и вряд ли будет)",
+			},
+		},
 	}, nil
 }
 
@@ -184,6 +206,34 @@ func addBD() {
 		Manufacturer: Manufacturer{ // предполагаемая структура
 			Name:    "Pratt & Whitney",
 			Country: "USA",
+			Website: "http/idinahu",
+		},
+		Tags: []string{"engine", "turbofan", "boeing777", "aviation"},
+		Metadata: map[string]any{
+			"thrust_kn":    400.0,
+			"bypass_ratio": 5.0,
+			"certified":    true,
+		},
+		Created_at: time.Now().Add(-30 * 24 * time.Hour),
+		Update_at:  time.Now(),
+	}
+
+	BD["550e8400-e29b-41d4-a716-446655440002"] = &Part{
+		Uuid:           "550e8400-e29b-41d4-a716-446655440002",
+		Name:           "Двигатель Pratt ",
+		Description:    "Турбовентиляторный двигатель",
+		Price:          1250000.50,
+		Stock_quantity: 2,
+		Category:       Category(2),
+		Dimensions: Dimensions{ // предполагаемая структура
+			Length: 3.5,
+			Width:  2.8,
+			Height: 4.1,
+			Weight: 5.1,
+		},
+		Manufacturer: Manufacturer{ // предполагаемая структура
+			Name:    "Pratt & Whitney",
+			Country: "Russia",
 			Website: "http/idinahu",
 		},
 		Tags: []string{"engine", "turbofan", "boeing777", "aviation"},

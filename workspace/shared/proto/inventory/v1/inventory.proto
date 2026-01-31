@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 service InventoryService{
   rpc GetPart(GetRequest) returns (GetResponse);
 
-  rpc ListenPart(ListenRequest) returns(ListenResponse);
+  rpc ListPart(ListRequest) returns(ListResponse);
 }
 
 message GetRequest{
@@ -20,11 +20,11 @@ message GetResponse{
   Part part = 1;
 }
 
-message ListenRequest{
+message ListRequest{
   PartsFilter parts = 1;
 }
 
-message ListenResponse{
+message ListResponse{
   repeated Part part = 1;
 }
 

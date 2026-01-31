@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	InventoryService_GetPart_FullMethodName    = "/inventory.v1.InventoryService/GetPart"
-	InventoryService_ListenPart_FullMethodName = "/inventory.v1.InventoryService/ListenPart"
+	InventoryService_GetPart_FullMethodName  = "/inventory.v1.InventoryService/GetPart"
+	InventoryService_ListPart_FullMethodName = "/inventory.v1.InventoryService/ListPart"
 )
 
 // InventoryServiceClient is the client API for InventoryService service.
@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type InventoryServiceClient interface {
 	GetPart(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
-	ListenPart(ctx context.Context, in *ListenRequest, opts ...grpc.CallOption) (*ListenResponse, error)
+	ListPart(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 }
 
 type inventoryServiceClient struct {
@@ -49,10 +49,10 @@ func (c *inventoryServiceClient) GetPart(ctx context.Context, in *GetRequest, op
 	return out, nil
 }
 
-func (c *inventoryServiceClient) ListenPart(ctx context.Context, in *ListenRequest, opts ...grpc.CallOption) (*ListenResponse, error) {
+func (c *inventoryServiceClient) ListPart(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListenResponse)
-	err := c.cc.Invoke(ctx, InventoryService_ListenPart_FullMethodName, in, out, cOpts...)
+	out := new(ListResponse)
+	err := c.cc.Invoke(ctx, InventoryService_ListPart_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *inventoryServiceClient) ListenPart(ctx context.Context, in *ListenReque
 // for forward compatibility.
 type InventoryServiceServer interface {
 	GetPart(context.Context, *GetRequest) (*GetResponse, error)
-	ListenPart(context.Context, *ListenRequest) (*ListenResponse, error)
+	ListPart(context.Context, *ListRequest) (*ListResponse, error)
 	mustEmbedUnimplementedInventoryServiceServer()
 }
 
@@ -78,8 +78,8 @@ type UnimplementedInventoryServiceServer struct{}
 func (UnimplementedInventoryServiceServer) GetPart(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPart not implemented")
 }
-func (UnimplementedInventoryServiceServer) ListenPart(context.Context, *ListenRequest) (*ListenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListenPart not implemented")
+func (UnimplementedInventoryServiceServer) ListPart(context.Context, *ListRequest) (*ListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPart not implemented")
 }
 func (UnimplementedInventoryServiceServer) mustEmbedUnimplementedInventoryServiceServer() {}
 func (UnimplementedInventoryServiceServer) testEmbeddedByValue()                          {}
@@ -120,20 +120,20 @@ func _InventoryService_GetPart_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _InventoryService_ListenPart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListenRequest)
+func _InventoryService_ListPart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(InventoryServiceServer).ListenPart(ctx, in)
+		return srv.(InventoryServiceServer).ListPart(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: InventoryService_ListenPart_FullMethodName,
+		FullMethod: InventoryService_ListPart_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(InventoryServiceServer).ListenPart(ctx, req.(*ListenRequest))
+		return srv.(InventoryServiceServer).ListPart(ctx, req.(*ListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -150,8 +150,8 @@ var InventoryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _InventoryService_GetPart_Handler,
 		},
 		{
-			MethodName: "ListenPart",
-			Handler:    _InventoryService_ListenPart_Handler,
+			MethodName: "ListPart",
+			Handler:    _InventoryService_ListPart_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
