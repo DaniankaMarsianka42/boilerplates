@@ -1,4 +1,4 @@
-module github.com/DaniankaMarsianka42/boilerplates/tree/main/workspace/shared
+module github.com/DaniankaMarsianka42/boilerplates/workspace/shared
 
 go 1.25.0
 

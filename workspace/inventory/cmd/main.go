@@ -99,14 +99,14 @@ func CmdPartToProtoPart(cmdPart *Part) *inventory_v1.Part {
 	}
 }
 
-type inventoryService struct {
+type inventoryServer struct {
 	inventory_v1.UnimplementedInventoryServiceServer
 
 	mu   sync.RWMutex
 	part Part
 }
 
-func (s *inventoryService) GetPart(_ context.Context, req *inventory_v1.GetRequest) (*inventory_v1.GetResponse, error) {
+func (s *inventoryServer) GetPart(_ context.Context, req *inventory_v1.GetRequest) (*inventory_v1.GetResponse, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -119,6 +119,14 @@ func (s *inventoryService) GetPart(_ context.Context, req *inventory_v1.GetReque
 		Part: CmdPartToProtoPart(part),
 	}, nil
 
+}
+
+func (s *inventoryServer) ListenPart(_ context.Context, req *inventory_v1.ListenRequest) (*inventory_v1.ListenResponse, error) {
+	log.Println("uuid из реквеста: ", req.Parts.Uuid)
+
+	return &inventory_v1.ListenResponse{
+		Part: nil,
+	}, nil
 }
 
 func main() {
@@ -134,7 +142,7 @@ func main() {
 	s := grpc.NewServer()
 
 	//Регистрация нашего сервера
-	service := &inventoryService{}
+	service := &inventoryServer{}
 
 	inventory_v1.RegisterInventoryServiceServer(s, service)
 
