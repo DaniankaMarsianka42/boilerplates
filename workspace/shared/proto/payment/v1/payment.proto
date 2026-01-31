@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package payment.v1;
+
+option go_package = "../../../pkg/proto/payment/v1;payment_v1";
+
+service PaymentService{
+  rpc PayOrder(PayRequest) returns (PayResponse);
+}
+
+message PayRequest{
+  string order_uuid = 1;
+  string user_uuid = 2;
+  PaymentMethod payment_method = 3;
+}
+
+message PayResponse{
+  string transaction_uuid = 1;
+}
+
+enum PaymentMethod{
+  CATEGORY_UNKNOWN = 0;
+  CARD = 1;
+  SBP = 2;
+  CREDIT_CARD = 3;
+  INVESTOR_MONEY = 4;
+}
