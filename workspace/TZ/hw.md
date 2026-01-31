@@ -9,9 +9,9 @@
 
 ### ✅ Что нужно сделать:
 
-1. Реализовать **HTTP API для `OrderService`**, строго следуя OpenAPI-контракту [`order_service_contracts.md`](contracts/order_service_contracts.md).
-2. Реализовать **gRPC API для `InventoryService`**, используя контракт [`inventory_service_contracts.md`](contracts/inventory_service_contracts.md).
-3. Реализовать **gRPC API для `PaymentService`**, используя контракт [`payment_service_contracts.md`](contracts/payment_service_contracts.md).
+1. Реализовать **HTTP API для `OrderService`**, строго следуя OpenAPI-контракту [`order_service_contracts.md`](order_service_contracts.md).
+2. Реализовать **gRPC API для `InventoryService`**, используя контракт [`inventory_service_contracts.md`](inventory_service_contracts.md).
+3. Реализовать **gRPC API для `PaymentService`**, используя контракт [`payment_service_contracts.md`](payment_service_contracts.md).
 4. В `OrderService` через gRPC-клиенты интегрировать вызовы `InventoryService` и `PaymentService`, реализовав бизнес-логику сервиса.
 
 ---

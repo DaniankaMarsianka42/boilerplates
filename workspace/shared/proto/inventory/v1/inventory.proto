@@ -8,6 +8,8 @@ import "google/protobuf/timestamp.proto";
 
 service InventoryService{
   rpc GetPart(GetRequest) returns (GetResponse);
+
+  rpc ListenPart(ListenRequest) returns(ListenResponse);
 }
 
 message GetRequest{
@@ -16,6 +18,22 @@ message GetRequest{
 
 message GetResponse{
   Part part = 1;
+}
+
+message ListenRequest{
+  PartsFilter parts = 1;
+}
+
+message ListenResponse{
+  repeated Part part = 1;
+}
+
+message PartsFilter{
+  repeated string uuid = 1;
+  repeated string name = 2;
+  repeated Category category = 3;
+  repeated string manufacturer = 4;
+  repeated string tags = 5;
 }
 
 message Part{

@@ -73,7 +73,7 @@ func (c Category) String() string {
 
 var BD = make(map[string]*Part)
 
-const grpcPort = 5050
+const grpcPort = 50051
 
 func CmdPartToProtoPart(cmdPart *Part) *inventory_v1.Part {
 	return &inventory_v1.Part{
@@ -101,8 +101,8 @@ func CmdPartToProtoPart(cmdPart *Part) *inventory_v1.Part {
 
 type inventoryService struct {
 	inventory_v1.UnimplementedInventoryServiceServer
-	mu sync.RWMutex
 
+	mu   sync.RWMutex
 	part Part
 }
 
@@ -122,38 +122,13 @@ func (s *inventoryService) GetPart(_ context.Context, req *inventory_v1.GetReque
 }
 
 func main() {
-	BD["550e8400-e29b-41d4-a716-446655440001"] = &Part{
-		Uuid:           "550e8400-e29b-41d4-a716-446655440001",
-		Name:           "Двигатель Pratt & Whitney PW4000",
-		Description:    "Турбовентиляторный двигатель для Boeing 777",
-		Price:          1250000.50,
-		Stock_quantity: 2,
-		Category:       Category(2),
-		Dimensions: Dimensions{ // предполагаемая структура
-			Length: 3.5,
-			Width:  2.8,
-			Height: 4.1,
-			Weight: 5.1,
-		},
-		Manufacturer: Manufacturer{ // предполагаемая структура
-			Name:    "Pratt & Whitney",
-			Country: "USA",
-		},
-		Tags: []string{"engine", "turbofan", "boeing777", "aviation"},
-		Metadata: map[string]any{
-			"thrust_kn":    400.0,
-			"bypass_ratio": 5.0,
-			"certified":    true,
-		},
-		Created_at: time.Now().Add(-30 * 24 * time.Hour),
-		Update_at:  time.Now(),
-	}
-
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
 		log.Printf("Ошибка регестрации сервера: %v\n", err)
 		return
 	}
+
+	addBD()
 
 	//Создание gRPC сервера
 	s := grpc.NewServer()
@@ -182,4 +157,34 @@ func main() {
 	log.Println("🛑Остановка gRPC сервера Shutting down...")
 	s.GracefulStop()
 	log.Println("✅ Сервер остановлен")
+}
+
+func addBD() {
+	BD["550e8400-e29b-41d4-a716-446655440001"] = &Part{
+		Uuid:           "550e8400-e29b-41d4-a716-446655440001",
+		Name:           "Двигатель Pratt & Whitney PW4000",
+		Description:    "Турбовентиляторный двигатель для Boeing 777",
+		Price:          1250000.50,
+		Stock_quantity: 2,
+		Category:       Category(2),
+		Dimensions: Dimensions{ // предполагаемая структура
+			Length: 3.5,
+			Width:  2.8,
+			Height: 4.1,
+			Weight: 5.1,
+		},
+		Manufacturer: Manufacturer{ // предполагаемая структура
+			Name:    "Pratt & Whitney",
+			Country: "USA",
+			Website: "http/idinahu",
+		},
+		Tags: []string{"engine", "turbofan", "boeing777", "aviation"},
+		Metadata: map[string]any{
+			"thrust_kn":    400.0,
+			"bypass_ratio": 5.0,
+			"certified":    true,
+		},
+		Created_at: time.Now().Add(-30 * 24 * time.Hour),
+		Update_at:  time.Now(),
+	}
 }
