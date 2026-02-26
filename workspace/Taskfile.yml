@@ -10,6 +10,8 @@ vars:
   BUF_VERSION: '1.64.0'
   PROTOC_GEN_GO_VERSION: 'v1.36.6'
   PROTOC_GEN_GO_GRPC_VERSION: 'v1.5.1'
+  OGEN_VERSION: 'v1.14.0'
+  YQ_VERSION: 'v4.45.2'
 
   BIN_DIR: '{{.ROOT_DIR}}/bin'
   GOLANGCI_LINT: '{{.BIN_DIR}}/golangci-lint'
@@ -18,8 +20,20 @@ vars:
   BUF: '{{.BIN_DIR}}/buf'
   PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
   PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
+  OGEN: '{{.BIN_DIR}}/ogen'
+  YQ: '{{.BIN_DIR}}/yq'
 
-  MODULES: inventory
+  NODE_MODULES_DIR: '{{.ROOT_DIR}}/node_modules/.bin'
+  REDOCLY: '{{.NODE_MODULES_DIR}}/redocly'
+
+  OPEN_API_ORDER_V1_BASE: '{{.ROOT_DIR}}/shared/api/order/v1/order.openapi.yaml'
+  OPEN_API_ORDER_V1_BUNDLE: '{{.ROOT_DIR}}/shared/api/bundles/order.openapi.v1.bundle.yaml'
+  OPEN_API_FILES: '{{.ROOT_DIR}}/shared/api/bundles'
+
+  API_BUNDLE: shared\api\bundle\order.openapi.v1.bundle.yaml
+  API_TARGET: shared\pkg\api\order\v1
+
+  MODULES: inventory shared payment order
 
 tasks:
   install-formatters:
@@ -54,7 +68,7 @@ tasks:
       Использует инструменты:
         - gofumpt: для стандартизации форматирования
         - gci: для сортировки импортов по стандартным группам
-    deps: [ install-formatters ]
+    #deps: [ install-formatters ]
     cmds:
       - |
         echo "🧼 Форматируем через gofumpt ..."
@@ -85,7 +99,7 @@ tasks:
     cmds:
       - |
         [ -f {{.GOLANGCI_LINT}} ] || {
-          mkdir -p {{.BIN_DIR}}
+          install -d {{.BIN_DIR}} || true  # вместо mkdir -p
           echo "📦 Устанавливаем golangci-lint {{.GOLANGCI_LINT_VERSION}}..."
           GOBIN={{.BIN_DIR}} go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GOLANGCI_LINT_VERSION}}
         }
@@ -159,3 +173,58 @@ tasks:
       dir: shared/proto
       cmds:
         - '{{.BUF}} lint'
+
+  redocly-cli:install:
+    desc: Установить Redocly CLI
+    cmds:
+      - npm install @redocly/cli --save-dev
+    status:
+      - 'test -f "node_modules/.bin/redocly.cmd"'
+
+  redocly-cli:order-v1-bundle:
+    desc: "Собрать OpenAPI в один файл"
+    deps: [redocly-cli:install]
+    cmds:
+      # Правильный порядок: bundle ФАЙЛ -o ВЫВОД
+      - npx redocly bundle "{{.OPEN_API_ORDER_V1_BASE}}" -o "{{.OPEN_API_ORDER_V1_BUNDLE}}"
+
+
+  ogen:gen:
+    cmds:
+      - .\bin\ogen.exe --target shared\pkg\api\gen --package order --clean shared\api\bundles\order.openapi.v1.bundle.yaml
+
+
+  # Генерация API кода
+  gen:api:
+    desc: "Генерирует Go код из OpenAPI спецификации заказа"
+    cmds:
+      - echo "📦 Генерация Go кода из OpenAPI спецификации..."
+      # Проверяем существование файла
+      - cmd: dir {{.API_BUNDLE}}
+        ignore_error: true
+      # Генерируем код
+      - '{{.OGEN}} -target {{.API_TARGET}} -package v1 -clean {{.API_BUNDLE}}'
+      - echo "✅ Генерация завершена!"
+    sources:
+      - '{{.API_BUNDLE}}'
+    generates:
+      - '{{.API_TARGET}}\*.go'
+
+
+
+  yq:install:
+    desc: "Устанавливает yq в bin/"
+    cmds:
+      - test -f {{.YQ}} || GOBIN={{.BIN_DIR}} go install github.com/mikefarah/yq/v4@{{.YQ_VERSION}}
+    status:
+      - test -f {{.YQ}}
+
+  ogen:install:
+    desc: "Скачивает ogen в папку bin"
+    cmds:
+      - test -f {{.OGEN}} || GOBIN={{.BIN_DIR}} go install github.com/ogen-go/ogen/cmd/ogen@{{.OGEN_VERSION}}
+    status:
+      - test -f {{.OGEN}}
+
+
+

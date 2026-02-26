@@ -1,0 +1,36 @@
+post:
+  summary: Update or create weather data for a city
+  operationId: CreateOrderByCity
+  tags:
+    - Order
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/create_order_request.yaml
+  responses:
+    '200':
+      description: Weather information successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/create_order_200.yaml
+    '400':
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/bad_request_error.yaml
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/internal_server_error.yaml
+    default:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: ../components/errors/generic_error.yaml

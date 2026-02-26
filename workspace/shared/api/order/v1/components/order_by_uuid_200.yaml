@@ -1,0 +1,57 @@
+type: object
+required:
+  - order_uuid
+  - user_uuid
+  - part_uuid
+  - total_price
+  - transaction_uuid
+  - payment_method
+  - status
+properties:
+  order_uuid:
+    type: string
+    description: Номер заказа
+    minLength: 1
+    maxLength: 100
+    example: "1524f3b2-f3ee-401b-92e8-08de5f46bfe1"
+  user_uuid:
+    type: string
+    description: Номер пользователя
+    minLength: 1
+    maxLength: 100
+    example: "1524f3b2-f3ee-401b-92e8-08de5f46bfe1"
+  part_uuid:
+    type: array
+    items:
+      type: string
+    description: Номера запчастей
+    example:
+      - "550e8400-e29b-41d4-a716-446655440001"
+      - "550e8400-e29b-41d4-a716-446655440002"
+  total_price:
+    type: number
+    format: float
+    description: Общая цена
+    example: 1250000.50
+  transaction_uuid:
+    type: string
+    description: Номер Транзакции
+    minLength: 1
+    maxLength: 100
+    example: "1524f3b2-f3ee-401b-92e8-08de5f46bfe1"
+  payment_method:
+    type: string
+    enum:
+      - CATEGORY_UNKNOWN
+      - CARD
+      - SBP
+      - CREDIT_CARD;
+      - INVESTOR_MONEY
+    example: CARD
+  status:
+    type: string
+    enum:
+      - PENDING_PAYMENT
+      - PAID
+      - CANCELLED
+    example: PAID

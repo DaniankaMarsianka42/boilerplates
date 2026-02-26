@@ -1,0 +1,19 @@
+openapi: 3.1.0
+info:
+  title: OrderService API
+  version: 1.0.0
+  description: API для работы с приемом заказов и их оплатой
+x-ogen:
+  target: ../../../pkg/openapi/order/v1
+  package: order_v1
+  clean: true
+
+tags:
+  - name: Order
+    description: Операции с данными о заказах — получение и обновление информации
+
+paths:
+  /api/v1/orders:
+    $ref: ./paths/order.yaml
+  #/api/v1/orders/{order_uuid}:
+  #  $ref: ./paths/order_by_uuid.yaml

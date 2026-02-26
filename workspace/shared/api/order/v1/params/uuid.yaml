@@ -1,0 +1,9 @@
+name: uuid
+in: path
+required: true
+description: Uuid детали
+schema:
+  type: string
+  minLength: 1
+  maxLength: 100
+  example: "1524f3b2-f3ee-401b-92e8-08de5f46bfe1"
