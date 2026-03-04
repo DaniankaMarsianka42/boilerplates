@@ -18,6 +18,8 @@ import (
 	"time"
 )
 
+const grpcPort = 50051
+
 type Part struct {
 	Uuid           string
 	Name           string
@@ -73,8 +75,6 @@ func (c Category) String() string {
 
 var BD = make(map[string]*Part)
 
-const grpcPort = 50051
-
 func CmdPartToProtoPart(cmdPart *Part) *inventory_v1.Part {
 	return &inventory_v1.Part{
 		Uuid:        cmdPart.Uuid,
@@ -125,30 +125,28 @@ func (s *inventoryServer) ListPart(_ context.Context, req *inventory_v1.ListRequ
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	if len(req.Parts.Uuid)+len(req.Parts.Name)+
-		len(req.Parts.Category)+len(req.Parts.Manufacturer)+
-		len(req.Parts.Manufacturer) == 0 {
+	var parts []*inventory_v1.Part
+	flag := true
 
-		var parts = []*inventory_v1.Part{}
+	for _, uuid := range req.GetUuid() {
+		part, ok := BD[uuid]
+		log.Println(uuid)
 
-		for _, part := range BD {
-			parts = append(parts, CmdPartToProtoPart(part))
+		if ok {
+			parts = append(parts, &inventory_v1.Part{Uuid: part.Uuid})
+		} else {
+			flag = false
+			break
 		}
+	}
 
+	if flag {
 		return &inventory_v1.ListResponse{
 			Part: parts,
 		}, nil
 	}
 
-	log.Println("че то передали походу")
-
-	return &inventory_v1.ListResponse{
-		Part: []*inventory_v1.Part{
-			&inventory_v1.Part{
-				Uuid: "фильтрации пока что нет(и вряд ли будет)",
-			},
-		},
-	}, nil
+	return nil, nil
 }
 
 func main() {

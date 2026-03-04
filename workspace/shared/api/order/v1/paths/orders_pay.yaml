@@ -1,6 +1,9 @@
+parameters:
+  - $ref: ../params/uuid.yaml
+
 post:
   summary: Update or create weather data for a city
-  operationId: CreateOrderByCity
+  operationId: PayOrder
   tags:
     - Order
   requestBody:
@@ -8,14 +11,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/create_order_request.yaml
+          $ref: ../components/payment_methods.yaml
   responses:
     '200':
       description: Weather information successfully updated
       content:
         application/json:
           schema:
-            $ref: ../components/create_order_200.yaml
+            $ref: ../components/request_pay_order.yaml
     '400':
       description: Bad request - validation error
       content:

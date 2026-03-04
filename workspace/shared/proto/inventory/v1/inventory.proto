@@ -21,19 +21,11 @@ message GetResponse{
 }
 
 message ListRequest{
-  PartsFilter parts = 1;
+  repeated string uuid = 1;
 }
 
 message ListResponse{
   repeated Part part = 1;
-}
-
-message PartsFilter{
-  repeated string uuid = 1;
-  repeated string name = 2;
-  repeated Category category = 3;
-  repeated string manufacturer = 4;
-  repeated string tags = 5;
 }
 
 message Part{

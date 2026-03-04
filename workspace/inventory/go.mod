@@ -2,7 +2,6 @@ module github.com/DaniankaMarsianka42/boilerplate/workspace/inventory
 
 go 1.25.0
 
-
 require (
 	github.com/DaniankaMarsianka42/boilerplates v0.0.0-20260130101143-ffad3880f46c
 	google.golang.org/grpc v1.78.0

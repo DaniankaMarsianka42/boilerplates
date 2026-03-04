@@ -18,8 +18,8 @@ vars:
   GCI: '{{.BIN_DIR}}/gci'
   GOFUMPT: '{{.BIN_DIR}}/gofumpt'
   BUF: '{{.BIN_DIR}}/buf'
-  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-gen-go'
-  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-gen-go-grpc'
+  PROTOC_GEN_GO: '{{.BIN_DIR}}/protoc-v1-go'
+  PROTOC_GEN_GO_GRPC: '{{.BIN_DIR}}/protoc-v1-go-grpc'
   OGEN: '{{.BIN_DIR}}/ogen'
   YQ: '{{.BIN_DIR}}/yq'
 
@@ -191,7 +191,7 @@ tasks:
 
   ogen:gen:
     cmds:
-      - .\bin\ogen.exe --target shared\pkg\api\gen --package order --clean shared\api\bundles\order.openapi.v1.bundle.yaml
+      - .\bin\ov1.exe --target shared\pkg\api\v1 --package order --clean shared\api\bundles\order.openapi.v1.bundle.yaml
 
 
   # Генерация API кода
